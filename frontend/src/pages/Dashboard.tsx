@@ -33,10 +33,22 @@ function priorityBadge(priority: Task['priority']) {
 }
 
 export default function Dashboard() {
-  const { data, isLoading } = useQuery<DashboardData>({
+  const { data, isLoading, error } = useQuery<DashboardData>({
     queryKey: ['dashboard'],
     queryFn: () => api.get('/dashboard').then((r) => r.data),
   });
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="card border-red-200 bg-red-50">
+          <p className="text-red-600 font-medium">Failed to load dashboard</p>
+          <p className="text-red-400 text-sm mt-1">{(error as Error).message}</p>
+          <p className="text-gray-500 text-xs mt-2">Make sure your backend is running and the API URL is correct.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
